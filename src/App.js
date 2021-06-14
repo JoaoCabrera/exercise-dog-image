@@ -20,13 +20,26 @@ class App extends React.Component {
     .then(response => response.json())
     .then(data => {
       this.setState({
-        dogObject: data
+        dogObject: data.message
       })
     })
   }
 
   componentDidMount() {
     this.fetchDog();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.dogObject.includes("terrier")) {
+      return false;
+    }
+    return true;
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem("dogURL", this.state.dogObject);
+    const breed = this.state.dogObject.split("/")[4];
+    alert(breed);
   }
 
   nextImage() {
@@ -40,7 +53,7 @@ class App extends React.Component {
   render() {
     const { dogObject } = this.state;
     const loadingElement = <h3>Carregando...</h3>
-    const imageElement = <img src={ dogObject.message }></img>
+    const imageElement = <img src={ dogObject }></img>
     return (
       <div>
         <h1>Doguinhos</h1>
